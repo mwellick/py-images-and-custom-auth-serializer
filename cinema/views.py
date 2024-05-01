@@ -102,8 +102,8 @@ class MovieViewSet(
     def upload_image(self, request: Request, pk=None):
         movie = self.get_object()
         serializer = self.get_serializer(movie, data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -154,10 +154,13 @@ class OrderPagination(PageNumberPagination):
 
 
 class OrderViewSet(
-    mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet
 ):
     queryset = Order.objects.prefetch_related(
-        "tickets__movie_session__movie", "tickets__movie_session__cinema_hall"
+        "tickets__movie_session__movie",
+        "tickets__movie_session__cinema_hall"
     )
     serializer_class = OrderSerializer
     pagination_class = OrderPagination
